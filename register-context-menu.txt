@@ -1,0 +1,29 @@
+# Re-register VS Code context menu entry
+Write-Output "Re-registering VS Code context menu..."
+$vsCodePath = (Get-Command code).Source
+if ($vsCodePath) {
+    New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Name "(default)" -Value "Open with VS Code"
+    New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode\command" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode\command" -Name "(default)" -Value "`"$vsCodePath`" `"%V`""
+    Write-Output "VS Code context menu registered."
+} else {
+    Write-Output "VS Code executable not found in PATH."
+}
+
+# Re-register Git Bash context menu entry
+Write-Output "Re-registering Git Bash context menu..."
+$gitBashPath = "C:\Program Files\Git\git-bash.exe"
+if (Test-Path $gitBashPath) {
+    New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\git_bash" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\git_bash" -Name "(default)" -Value "Git Bash Here"
+    New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\git_bash\command" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\git_bash\command" -Name "(default)" -Value "`"$gitBashPath`""
+    Write-Output "Git Bash context menu registered."
+} else {
+    Write-Output "Git Bash executable not found at $gitBashPath."
+}
+
+Write-Output "Done. Restart Explorer to apply changes."
+
+# - Copy the script into a .ps1 file (e.g., RegisterContextMenus.ps1)
